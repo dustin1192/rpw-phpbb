@@ -1,12 +1,32 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes, Events, ActivityType } = require('discord.js');
 const dotenv = require('dotenv');
 const fs = require('fs');
 const mysql = require('mysql2/promise');
+const config = require("./config.json");
 
 dotenv.config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+    ],
+});
+
 client.commands = new Collection();
+
+const syncFilePath = './sync.json';
+
+function loadSyncData() {
+    if (fs.existsSync(syncFilePath)) {
+        return JSON.parse(fs.readFileSync(syncFilePath, 'utf8'));
+    } else {
+        console.log('Файл синхронизации не найден. Используется пустой объект.');
+        return {};
+    }
+}
 
 const commandFiles = fs.readdirSync('./modules').filter(file => file.endsWith('.js'));
 
@@ -52,6 +72,13 @@ client.once('ready', async () => {
     } catch (error) {
         console.error('Ошибка при регистрации глобальных команд:', error);
     }
+    client.user.setPresence({
+        activities: [{
+            name: '> Синхронизация доступна.',
+            type: ActivityType.Custom,
+        }],
+        status: 'online'
+    });
 });
 
 client.on('interactionCreate', async interaction => {
