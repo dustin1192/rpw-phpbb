@@ -13,10 +13,6 @@ function loadSyncData() {
     }
 }
 
-function saveSyncData(data) {
-    fs.writeFileSync(syncFilePath, JSON.stringify(data, null, 2));
-}
-
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
