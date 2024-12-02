@@ -1,6 +1,11 @@
 Для некоммерческого использования
 
 
+## Screenshots
+
+![Main](https://i.imgur.com/Xr4iqf6.png)
+
+
 ## Run Locally
 
 Clone the project
@@ -37,4 +42,5 @@ Start the server
 ```bash
   npm run start
 ```
+
 
